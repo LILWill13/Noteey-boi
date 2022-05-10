@@ -5,7 +5,9 @@ const read = util.promisify(fs.readFile);
 
 const write = (file, note) =>{
     try{
-        fs.writeFile(file, JSON.stringify(note));
+        fs.writeFile(file, JSON.stringify(note), () => {
+            console.log('success')
+        });
     } catch(err){
         console.error(err);
     }
@@ -13,10 +15,11 @@ const write = (file, note) =>{
 
 const read_write = (note, file) => {
     try{
-        fs.readFile(file, 'utf8')
-        const parsedData = JSON.parse(data);
-        parsedData.push(note);
-        writeToFile(file, parsedData);
+        fs.readFile(file, 'utf8', (err, data) => {
+            const parsedData = JSON.parse(data);
+            parsedData.push(note);
+            write(file, parsedData);
+        });
     } catch(err){
         console.error(err);
     }
